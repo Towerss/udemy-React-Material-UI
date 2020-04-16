@@ -4,7 +4,7 @@ import ToolBar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import theme from './Theme';
+
 
 function ElevationScroll(props) {
     const { children } = props;
@@ -25,6 +25,7 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar
   }
 }));
+
 
 
 const Header = (props) => {
