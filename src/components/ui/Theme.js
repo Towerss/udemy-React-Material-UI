@@ -10,12 +10,29 @@ const theme = createMuiTheme({
             purple: lightBlue
         },
         primary: {
-            main: darkBlue
+            main: darkBlue,
+            contrastText: 'white'
         },
         secondary: {
             main: lightBlue
         }
+    },
+    typography:{
+        tab:{
+            fontFamily: 'Raleway',
+            textTransform: 'none',
+            fontWeight: 700,
+            fontSize: '1rem'
+        },
+        estimate:{
+            fontFamily: 'Pacifico',
+            fontSize: '1rem',
+            textTransform: 'none',
+            color: 'white'
+        }
     }
 }); 
+
+
 
 export default theme;
