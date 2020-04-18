@@ -8,6 +8,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 
 /**
@@ -65,13 +67,37 @@ const useStyles = makeStyles(theme => ({
 
 const Header = (props) => {
 
+  //  Variable to access the custom styles for this component
   const classes = useStyles();
+
+  //  State to hadle selected tab
   const [value, setValue] =useState(0);
 
+  //  State to hadle dropdown button menu
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  //  Variable to handle visibility of the dropdown menu
+  const [open, setOpen] = React.useState(false);
+
+  //  function to handle tab selected
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  //  function to hadle dropdown menu item selected
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);         //  gets the current clicked component and passes the reference to the state, so the menu "knows" where to render
+    setOpen(true);        //  then opens the menu anchored to the passed on component
+  };
+
+  //  handle closing the dropdown menu  
+  const handleClose = () => {
+    setAnchorEl(null);
+    setOpen(false);
+  };
+
+
+  //  hook to set the index of the current tab depending on the current url
   useEffect(() => {
     if (window.location.pathname === '/' && value !== 0) {
       setValue(0);
@@ -102,12 +128,25 @@ const Header = (props) => {
                   </Button>
                   <Tabs value={value} onChange={handleChange} className={classes.tabsContainer} indicatorColor={'primary'}>
                     <Tab className={classes.tab} label='Home' component={Link} to='/' />
-                    <Tab className={classes.tab} label='Services' component={Link} to='/services' />
+                    <Tab 
+                      aria-owns={anchorEl ? 'simple-menu' : undefined}
+                      aria-haspopup={anchorEl ? 'true' : undefined}
+                      onMouseOver={(e) => handleClick(e)}
+                      className={classes.tab} 
+                      label='Services' 
+                      component={Link} 
+                      to='/services' 
+                    />
                     <Tab className={classes.tab} label='The revolution' component={Link} to='/revolution' />
                     <Tab className={classes.tab} label='About Us' component={Link} to='/about' />
                     <Tab className={classes.tab} label='Contact Us' component={Link} to='/contact' />
                   </Tabs>
                   <Button className={classes.button} variant='contained' color={'secondary'} component={Link} to='/estimate'>Free Estimate</Button>
+                  <Menu id='simple-menu' anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{onMouseLeave: handleClose}}>
+                    <MenuItem onClick={() => {handleClose(); setValue(1);}} component={Link} to='/customsoftware'>Custom Software</MenuItem>
+                    <MenuItem onClick={() => {handleClose(); setValue(1);}} component={Link} to='/mobileapps'>Mobile App Developmentnpm</MenuItem>
+                    <MenuItem onClick={() => {handleClose(); setValue(1);}} component={Link} to='/websites'>Custom Software</MenuItem>
+                  </Menu>
                 </ToolBar>
             </AppBar>
         </ElevationScroll>
