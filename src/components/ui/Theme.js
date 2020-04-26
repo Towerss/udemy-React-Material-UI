@@ -10,11 +10,16 @@ const theme = createMuiTheme({
             purple: lightBlue
         },
         primary: {
-            main: darkBlue,
-            contrastText: 'white'
+            main: '#0277bd',
+            light: '#58a5f0',
+            dark: '#004c8c',
+            contrastText: '#ffffff'
         },
         secondary: {
-            main: lightBlue
+            main: '#ad1457',
+            light: '#e35183',
+            dark: '#78002e',
+            contrastText: '#ffffff'
         }
     },
     typography:{
