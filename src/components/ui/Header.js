@@ -11,7 +11,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 
 /**
@@ -37,7 +44,13 @@ function ElevationScroll(props) {
 const useStyles = makeStyles(theme => ({
   toolbarMargin: {
     ...theme.mixins.toolbar,
-    marginBottom: '3em'
+    marginBottom: '3em',
+    [theme.breakpoints.down('md') ]: {
+      marginBottom: '2em'
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '1.25em'
+    }
   },
   logo:{
     height: '8em',
@@ -81,6 +94,26 @@ const useStyles = makeStyles(theme => ({
       opacity: 1,
       backgroundcolor: 'transparent'
     }
+  },
+  drawer:{
+    backgroundColor: theme.palette.common.blue
+  },
+  drawerIcon:{
+    height: '50px',
+    width: '50px'
+  },
+  drawerIconContainer:{
+    marginLeft: 'auto',
+    '&:hover':{
+      backgroundColor: 'transparent'
+    }
+  },
+  drawerItem:{
+    ...theme.typography.tab,
+    color: 'white'
+  },
+  drawerItemEstimate:{
+    backgroundColor: '#ad1457'//theme.palette.common.orange
   }
 }));
 
@@ -100,6 +133,17 @@ const Header = (props) => {
   //  This is the reference to return true for any screen less than 'md'
   const matches = useMediaQuery(theme.breakpoints.down('md'));
 
+  // Optimal usability on iOS
+  const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+
+  /**
+   * Hooks Section
+   */
+
+  // State to handle drawer menu
+  const [openDrawer, setOpenDrawer] = useState(false); 
+  
   //  State to hadle selected tab
   const [value, setValue] =useState(0);
 
@@ -107,10 +151,11 @@ const Header = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   //  Variable to handle visibility of the dropdown menu
-  const [open, setOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
 
   //  
   const [selectedIndex, setSelectedIndex] = useState(0);
+
 
 
   //  function to handle tab selected
@@ -121,18 +166,18 @@ const Header = (props) => {
   //  function to hadle dropdown menu item selected
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);         //  gets the current clicked component and passes the reference to the state, so the menu "knows" where to render
-    setOpen(true);        //  then opens the menu anchored to the passed on component
+    setOpenMenu(true);        //  then opens the menu anchored to the passed on component
   };
 
   //  handle closing the dropdown menu  
   const handleClose = () => {
     setAnchorEl(null);
-    setOpen(false);
+    setOpenMenu(false);
   };
 
   const handleMenuItemClick = (event, index) => {
     setAnchorEl(null);
-    setOpen(false);
+    setOpenMenu(false);
     setSelectedIndex(index);
   }
 
@@ -243,7 +288,7 @@ const Header = (props) => {
         classes={{paper: classes.menu}} 
         id='simple-menu' 
         anchorEl={anchorEl} 
-        open={open} 
+        open={openMenu} 
         onClose={handleClose} 
         MenuListProps={{onMouseLeave: handleClose}}
         elevation={0}
@@ -271,6 +316,45 @@ const Header = (props) => {
   );
 
 
+  //  Drawer
+  const drawer = (
+    <Fragment>
+      <SwipeableDrawer 
+        disableBackdropTransition={!iOS} 
+        disableDiscovery={iOS} 
+        open={openDrawer} 
+        onClose={() => setOpenDrawer(false)} 
+        onOpen={() => setOpenDrawer(true)}
+        classes={{paper: classes.drawer}}
+        >
+        <List disablePadding>
+          <ListItem divider button onClick={() => {setOpenDrawer(false); setValue(0);}} component={Link} to='/' >
+            <ListItemText className={classes.drawerItem} selected={value === 0} disableTypography>Home</ListItemText>
+          </ListItem>
+          <ListItem divider button onClick={() => {setOpenDrawer(false); setValue(1);}} component={Link} to='/services' >
+            <ListItemText className={classes.drawerItem} selected={value === 1} disableTypography>Services</ListItemText>
+          </ListItem>
+          <ListItem divider button onClick={() => {setOpenDrawer(false); setValue(2);}} component={Link} to='/revolution' >
+            <ListItemText className={classes.drawerItem} selected={value === 2} disableTypography>The Revolution</ListItemText>
+          </ListItem>
+          <ListItem divider button onClick={() => {setOpenDrawer(false); setValue(3);}} component={Link} to='/about' >
+            <ListItemText className={classes.drawerItem} selected={value === 3} disableTypography>About Us</ListItemText>
+          </ListItem>
+          <ListItem divider button onClick={() => {setOpenDrawer(false); setValue(4); console.log(value);}} component={Link} to='/contact' >
+            <ListItemText className={classes.drawerItem} selected={value === 4} disableTypography>Contact Us</ListItemText>
+          </ListItem>
+          <ListItem className={classes.drawerItemEstimate} divider button onClick={() => {setOpenDrawer(false); setValue(5); console.log(value);}} component={Link} to='/estimate' >
+            <ListItemText className={classes.drawerItem} selected={value === 5} disableTypography>Free Estimate</ListItemText>
+          </ListItem>
+        </List>
+      </SwipeableDrawer>
+      <IconButton className={classes.drawerIconContainer} onClick={() => setOpenDrawer(!openDrawer)} disableRipple>
+        <MenuIcon className={classes.drawerIcon} />
+      </IconButton>
+    </Fragment>
+  );
+
+
     return (
       <Fragment>
         <ElevationScroll {...props}>
@@ -279,7 +363,7 @@ const Header = (props) => {
                   <Button component={Link} to='/' className={classes.logoContainer} onClick={() => setValue(0)} disableRipple>
                     <img alt='' className={classes.logo} src={logo} />
                   </Button>
-                  {matches ? null : tabs}
+                  {matches ? drawer : tabs}
                 </ToolBar>
             </AppBar>
         </ElevationScroll>

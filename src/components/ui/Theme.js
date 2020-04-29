@@ -6,7 +6,7 @@ const lightBlue = '#1CB5E0';
 const theme = createMuiTheme({
     palette:{
         common:{
-            blue: darkBlue,
+            blue: '#0277bd',
             purple: lightBlue
         },
         primary: {
